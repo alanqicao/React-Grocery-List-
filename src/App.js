@@ -1,26 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
+import React,{Component}from 'react';
 import './App.css';
+import List from './component/List';
+import GroceryForm from './component/GroceryForm';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component{
+  state = {grocerys:[{name: "123", complete: false }]}
+
+  getUniqId=()=>{
+    return Math.floor((1+Math.random())* 0x10000)
+    .toString(16)
+    .substring(1)
+  }
+
+  addItem = (name) =>{
+    const {grocerys} = this.state;
+    const grocery = {name,id: this.getUniqId(), complete: false}
+    this.setState({grocerys: [grocery,...grocerys]});
+  }
+  
+handleClick =(id)=>{
+  const {grocerys} =this.state;
+  const newgrocerys = grocerys.map( grocery=>{
+    if (grocery.id === id){
+      return {
+        ...grocery,
+        complete: !grocery.complete
+      }
+    }
+    return grocery
+  })
+  this.setState({
+    grocerys: newgrocerys
+  })
+}
+
+  render(){
+    const {grocerys} = this.state
+    return(
+      <div>
+        <GroceryForm addItem={this.addItem}/>
+        <List name ="Grocery List" items={grocerys} groceryClick={this.handleClick}/>
+      </div>
+    );
+  }
+
 }
 
 export default App;
